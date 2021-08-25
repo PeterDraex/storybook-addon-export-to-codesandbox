@@ -1,17 +1,17 @@
 {
-  "name": "storybook-addon-kit",
+  "name": "storybook-addon-export-to-codesandbox",
   "version": "0.0.0",
-  "description": "everything you need to build a Storybook addon",
+  "description": "Allows to export Story code to CodeSandbox",
   "keywords": [
     "storybook-addons",
-    "style",
+    "code",
     "test"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/storybookjs/storybook-addon-kit"
+    "url": "https://github.com/PeterDraex/storybook-addon-export-to-codesandbox"
   },
-  "author": "winkerVSbecks",
+  "author": "PeterDraex",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -81,12 +81,13 @@
     "access": "public"
   },
   "storybook": {
-    "displayName": "Addon Kit",
+    "displayName": "Export to CodeSandbox",
     "supportedFrameworks": [
-      "react",
-      "vue",
-      "angular"
+      "react"
     ],
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
+  },
+  "dependencies": {
+    "react-codesandboxer": "^3.1.5"
   }
 }
