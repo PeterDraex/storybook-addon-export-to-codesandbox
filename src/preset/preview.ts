@@ -8,6 +8,6 @@
  *
  * https://storybook.js.org/docs/react/writing-stories/decorators#gatsby-focus-wrapper
  */
-import { withExportToCodeSandboxButton } from "../withExportToCodeSandboxButton";
+import { withCodeSandboxButton } from '../withCodeSandboxButton';
 
-export const decorators = [withExportToCodeSandboxButton];
+export const decorators = [withCodeSandboxButton];

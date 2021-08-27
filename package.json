@@ -1,11 +1,10 @@
 {
   "name": "storybook-addon-export-to-codesandbox",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Allows to export Story code to CodeSandbox",
   "keywords": [
     "storybook-addons",
-    "code",
-    "test"
+    "code"
   ],
   "repository": {
     "type": "git",
@@ -88,6 +87,8 @@
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
   },
   "dependencies": {
+    "@fluentui/react-button": "^0.19.6",
+    "codesandbox": "^2.2.3",
     "react-codesandboxer": "^3.1.5"
   }
 }
