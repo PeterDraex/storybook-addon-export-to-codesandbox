@@ -1,8 +1,8 @@
 import { StoryFn as StoryFunction, StoryContext } from '@storybook/addons';
 import { useEffect } from '@storybook/addons';
 import { getParameters } from 'codesandbox/lib/api/define';
-import indexTs from '!!raw-loader!../../src/exportTemplates/index.ts';
-import indexHtml from '!!raw-loader!../../src/exportTemplates/index.html';
+import indexTs from '!!raw-loader!./templates/index.ts';
+import indexHtml from '!!raw-loader!./templates/index.html';
 
 const storyFiles: { [key: string]: string } = {};
 
