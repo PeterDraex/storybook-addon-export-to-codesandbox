@@ -7,8 +7,8 @@ import { STORY_NAME as Example } from './example';
 //
 
 ReactDOM.render(Example(), document.getElementById('root'));
-`
+`;
 
 export const indexHtml = `
 <div id="root"></div>
-`
+`;

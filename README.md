@@ -5,21 +5,22 @@ This Storybook plugin adds "Open in CodeSandbox" button to each story displayed 
 ## Installation
 
 This plugin expects a parameter called `exportToCodeSandbox` with property `storyFiles` which maps any `X.stories.tsx` filename to file content. If you are using Webpack, this can be configured by putting the following code to your `preview.js`:
+
 ```js
 export const parameters = {
   exportToCodeSandbox: {
-      getStoryFiles: () => {
-          const webpackContext = require.context('!!raw-loader!../', true, /\.stories\.tsx$/);
-          const storyFiles = {};
+    getStoryFiles: () => {
+      const webpackContext = require.context('!!raw-loader!../', true, /\.stories\.tsx$/);
+      const storyFiles = {};
 
-          webpackContext.keys().forEach(filename => {
-              storyFiles[filename] = webpackContext(filename).default;
-          });
+      webpackContext.keys().forEach(filename => {
+        storyFiles[filename] = webpackContext(filename).default;
+      });
 
-          return storyFiles;
-      }
-    }
-}
+      return storyFiles;
+    },
+  },
+};
 ```
 
 ## Assumptions
