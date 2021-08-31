@@ -18,7 +18,7 @@ export const withCodeSandboxButton: StoryWrapper = (StoryFn: StoryFunction, cont
 };
 
 const getStoryFile = (storyName: string, allStoriesFileName: string) => {
-  storyName = storyName.replace(' ', '');
+  storyName = storyName.replaceAll(' ', '');
 
   if (!storyFiles.hasOwnProperty(allStoriesFileName)) {
     console.error(
@@ -135,7 +135,7 @@ const displayToolState = (selector: string, context: any) => {
       },
       'index.ts': {
         isBinary: false,
-        content: indexTs.replace('STORY_NAME', context.story),
+        content: indexTs.replace('STORY_NAME', context.story.replaceAll(" ", "")),
       },
       'package.json': {
         isBinary: false,
