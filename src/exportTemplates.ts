@@ -1,3 +1,4 @@
+export const indexTs = `
 // @ts-nocheck
 import * as ReactDOM from 'react-dom';
 import { STORY_NAME as Example } from './example';
@@ -6,3 +7,8 @@ import { STORY_NAME as Example } from './example';
 //
 
 ReactDOM.render(Example(), document.getElementById('root'));
+`
+
+export const indexHtml = `
+<div id="root"></div>
+`

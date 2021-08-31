@@ -1,25 +1,20 @@
-import { StoryFn as StoryFunction, StoryContext } from '@storybook/addons';
-import { useEffect } from '@storybook/addons';
+import { StoryFn as StoryFunction, StoryContext, useEffect, StoryWrapper } from '@storybook/addons';
 import { getParameters } from 'codesandbox/lib/api/define';
-import indexTs from '!!raw-loader!./templates/index.ts';
-import indexHtml from '!!raw-loader!./templates/index.html';
+import { indexTs, indexHtml } from './exportTemplates';
 
-const storyFiles: { [key: string]: string } = {};
+let storyFiles: { [key: string]: string } = {};
 
-export const withCodeSandboxButton = (StoryFn: StoryFunction, context: StoryContext) => {
-  var webpackContext = require.context('!!raw-loader!../../', true, /\.stories\.tsx$/);
-  webpackContext.keys().forEach(filename => {
-    storyFiles[filename] = webpackContext(filename).default;
-  });
-
-  if (context.viewMode === 'docs') {
+export const withCodeSandboxButton: StoryWrapper = (StoryFn: StoryFunction, context: StoryContext) => {
+  storyFiles = context.parameters?.exportToCodeSandbox?.getStoryFiles();
+  
+  if (storyFiles && context.viewMode === 'docs') {
     useEffect(() => {
       displayToolState(`#anchor--${context.id} .docs-story`, context);
     });
-
-    return StoryFn();
   }
-};
+
+  return StoryFn(context);
+};  
 
 const getStoryFile = (storyName: string, allStoriesFileName: string) => {
   const allStoriesFile = storyFiles[allStoriesFileName];
