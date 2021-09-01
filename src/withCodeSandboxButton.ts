@@ -1,5 +1,5 @@
 import { StoryFn as StoryFunction, StoryContext, useEffect, StoryWrapper } from '@storybook/addons';
-import { getParameters } from 'codesandbox/lib/api/define';
+import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { indexTs, indexHtml } from './exportTemplates';
 import dedent from 'dedent';
 
