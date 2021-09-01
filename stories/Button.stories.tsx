@@ -5,13 +5,9 @@ export default {
   component: Button,
 };
 
-export const Emphasis2 = () => (
+export const ExampleErrorStory = () => (
   <>
-    <Button primary>Primary button</Button>
-    <Button>Default button</Button>
-    <Button outline>Outline button</Button>
-    <Button subtle>Subtle button</Button>
-    <Button transparent>Transparent button</Button>
+    <span>This story doesn’t have it’s individual story file and therefore will produce error.</span>
   </>
 );
 
