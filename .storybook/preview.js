@@ -1,3 +1,5 @@
+import { withLing } from '../src/preset/manager.tsx'
+
 export const parameters = {
   exportToCodeSandbox: {
     getStoryFiles: () => {
@@ -12,3 +14,5 @@ export const parameters = {
     },
   },
 };
+
+export const decorators = [withLing];

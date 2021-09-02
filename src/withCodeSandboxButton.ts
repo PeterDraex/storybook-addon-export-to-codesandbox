@@ -2,6 +2,7 @@ import { StoryFn as StoryFunction, StoryContext, useEffect, StoryWrapper } from 
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { indexTs, indexHtml } from './exportTemplates';
 import dedent from 'dedent';
+import { useStorybookApi } from '@storybook/api';
 
 let storyFiles: { [key: string]: string } = {};
 

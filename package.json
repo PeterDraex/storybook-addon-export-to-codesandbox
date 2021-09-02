@@ -89,6 +89,8 @@
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
   },
   "dependencies": {
-    "codesandbox-import-utils": "^2.2.3"
+    "codesandbox-import-utils": "^2.2.3",
+    "react-context-selector": "^1.0.3",
+    "use-context-selector": "^1.3.7"
   }
 }
