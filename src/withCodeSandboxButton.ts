@@ -1,63 +1,15 @@
 import { StoryFn as StoryFunction, StoryContext, useEffect, StoryWrapper } from '@storybook/addons';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { indexTs, indexHtml } from './exportTemplates';
-import dedent from 'dedent';
-
-let storyFiles: { [key: string]: string } = {};
 
 export const withCodeSandboxButton: StoryWrapper = (StoryFn: StoryFunction, context: StoryContext) => {
-  storyFiles = context.parameters?.exportToCodeSandbox?.getStoryFiles();
-
-  if (storyFiles && context.viewMode === 'docs') {
+  if (context.viewMode === 'docs') {
     useEffect(() => {
       displayToolState(`#anchor--${context.id} .docs-story`, context);
     });
   }
 
   return StoryFn(context);
-};
-
-const getStoryFile = (storyName: string, allStoriesFileName: string) => {
-  storyName = storyName.replaceAll(' ', '');
-
-  if (!storyFiles.hasOwnProperty(allStoriesFileName)) {
-    console.error(
-      dedent`Export to CodeSandbox: Result of parameters.exportToCodeSandbox.getStoryFiles() was expected 
-                          to be an object with property ${allStoriesFileName}. The actual result is:`,
-      storyFiles,
-    );
-
-    return false;
-  }
-
-  const allStoriesFile = storyFiles[allStoriesFileName];
-  const exportRegex = new RegExp(`export { ${storyName} } from ['"](.*?)['"]`);
-  let storyFileRelativeMatch = allStoriesFile.match(exportRegex);
-  let storyFileRelative = '';
-
-  if (storyFileRelativeMatch?.length > 1) storyFileRelative = storyFileRelativeMatch[1];
-  else {
-    console.error(dedent`Export to CodeSandbox: Please put ${storyName} to its own TypeScript file and export it from ${allStoriesFileName} in the following manner:
-                         export { ${storyName} } from './ExampleFileName.stories'`);
-    return false;
-  }
-
-  if (!storyFileRelative.endsWith('.tsx') && !storyFileRelative.endsWith('.ts')) storyFileRelative += '.tsx';
-
-  return resolveRelativePath(allStoriesFileName, storyFileRelative);
-};
-
-const resolveRelativePath = (base: string, relative: string) => {
-  var stack = base.split('/'),
-    parts = relative.split('/');
-  stack.pop();
-
-  for (var i = 0; i < parts.length; i++) {
-    if (parts[i] == '.') continue;
-    if (parts[i] == '..') stack.pop();
-    else stack.push(parts[i]);
-  }
-  return stack.join('/');
 };
 
 const getDependencies = (fileContent: string) => {
@@ -104,30 +56,26 @@ const displayToolState = (selector: string, context: any) => {
   const rootElement = document.querySelector(selector);
   rootElement.appendChild(exportLink);
 
-  const storyFile = getStoryFile(context.story, context.parameters.fileName);
+  const storyFile = context.parameters?.fullSource;
 
   if (!storyFile) {
-    console.error(`Export to CodeSandbox: Couldn’t find individual story file for ${context.story}.`);
+    console.error(`Export to CodeSandbox: Couldn’t find source for story ${context.story}.`);
     return false;
   }
 
-  if (!storyFiles.hasOwnProperty(storyFile)) {
-    console.error(
-      dedent`Export to CodeSandbox: Result of parameters.exportToCodeSandbox.getStoryFiles() was expected 
-                          to be an object with property ${storyFile}. The actual result is:`,
-      storyFiles,
-    );
+  if(storyFile.match(/[(import|export)] .* from ['"]\./g)) {
+    console.error(`Export to CodeSandbox: Story "${context.story}" contains relative import or export. Please use package imports only.`);
     return false;
   }
 
-  const dependencies = getDependencies(storyFiles[storyFile]);
+  const dependencies = getDependencies(storyFile);
 
   const defaultFileToPreview = encodeURIComponent('/example.tsx');
   const codeSandboxParameters = getParameters({
     files: {
       'example.tsx': {
         isBinary: false,
-        content: storyFiles[storyFile],
+        content: storyFile,
       },
       'index.html': {
         isBinary: false,
