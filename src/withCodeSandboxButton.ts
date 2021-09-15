@@ -26,8 +26,12 @@ const getDependencies = (fileContent: string) => {
 
   const dependenciesWithVersions: { [dependencyName: string]: string } = {};
   for (const dependency of dependencies) {
-    if(dependency.startsWith("@fluentui/react-"))
+    if(dependency == "@fluentui/react-components")
+      // FIX until react-components starts working in CodeSandbox
       dependenciesWithVersions[dependency] = '<9.0.0-alpha.60';
+    else if(dependency.startsWith("@fluentui/react-"))
+      // FIX until we get to a stable version
+      dependenciesWithVersions[dependency] = '^9.0.0-alpha';
     else
       dependenciesWithVersions[dependency] = 'latest';
   }
