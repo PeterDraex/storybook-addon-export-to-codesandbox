@@ -15,7 +15,10 @@ export const withCodeSandboxButton: StoryWrapper = (StoryFn: StoryFunction, cont
 const getDependencies = (fileContent: string) => {
   const matches = fileContent.matchAll(/import .* from ['"](.*?)['"];/g);
   const dependencies = new Set<string>();
-  dependencies.add('react-scripts').add('react-dom');
+  dependencies
+    .add('react-scripts') // necessary when using typescript in CodeSandbox
+    .add('react-dom') // necessary for react
+    .add('@fluentui/react-components'); // necessary for theme provider
 
   for (const match of matches) {
     if (!match[1].startsWith('react/')) dependencies.add(match[1]);
@@ -23,7 +26,10 @@ const getDependencies = (fileContent: string) => {
 
   const dependenciesWithVersions: { [dependencyName: string]: string } = {};
   for (const dependency of dependencies) {
-    dependenciesWithVersions[dependency] = 'latest';
+    if(dependency.startsWith("@fluentui/react-"))
+      dependenciesWithVersions[dependency] = '<9.0.0-alpha.60';
+    else
+      dependenciesWithVersions[dependency] = 'latest';
   }
 
   return dependenciesWithVersions;
@@ -81,7 +87,7 @@ const displayToolState = (selector: string, context: any) => {
         isBinary: false,
         content: indexHtml,
       },
-      'index.ts': {
+      'index.tsx': {
         isBinary: false,
         content: indexTs.replace('STORY_NAME', context.story.replaceAll(" ", "")),
       },
