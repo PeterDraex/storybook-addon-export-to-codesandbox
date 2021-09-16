@@ -1,5 +1,4 @@
-export const indexTs = 
-`// @ts-nocheck
+export const indexTs = `// @ts-nocheck
 import * as ReactDOM from 'react-dom';
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { STORY_NAME as Example } from './example';

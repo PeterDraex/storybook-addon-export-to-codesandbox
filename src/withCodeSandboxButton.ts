@@ -26,14 +26,13 @@ const getDependencies = (fileContent: string) => {
 
   const dependenciesWithVersions: { [dependencyName: string]: string } = {};
   for (const dependency of dependencies) {
-    if(dependency == "@fluentui/react-components")
+    if (dependency == '@fluentui/react-components')
       // FIX until react-components starts working in CodeSandbox
       dependenciesWithVersions[dependency] = '<9.0.0-alpha.60';
-    else if(dependency.startsWith("@fluentui/react-"))
+    else if (dependency.startsWith('@fluentui/react-'))
       // FIX until we get to a stable version
       dependenciesWithVersions[dependency] = '^9.0.0-alpha';
-    else
-      dependenciesWithVersions[dependency] = 'latest';
+    else dependenciesWithVersions[dependency] = 'latest';
   }
 
   return dependenciesWithVersions;
@@ -73,8 +72,10 @@ const displayToolState = (selector: string, context: any) => {
     return false;
   }
 
-  if(storyFile.match(/[(import|export)] .* from ['"]\./g)) {
-    console.error(`Export to CodeSandbox: Story "${context.story}" contains relative import or export. Please use package imports only.`);
+  if (storyFile.match(/[(import|export)] .* from ['"]\./g)) {
+    console.error(
+      `Export to CodeSandbox: Story "${context.story}" contains relative import or export. Please use package imports only.`,
+    );
     return false;
   }
 
@@ -93,7 +94,7 @@ const displayToolState = (selector: string, context: any) => {
       },
       'index.tsx': {
         isBinary: false,
-        content: indexTs.replace('STORY_NAME', context.story.replaceAll(" ", "")),
+        content: indexTs.replace('STORY_NAME', context.story.replaceAll(' ', '')),
       },
       'package.json': {
         isBinary: false,
