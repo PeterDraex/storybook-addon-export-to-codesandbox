@@ -2,40 +2,53 @@ import { StoryFn as StoryFunction, StoryContext, useEffect, StoryWrapper } from 
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { indexTs, indexHtml } from './exportTemplates';
 
+const dependencyRegex = / from '.*?'; \/\/ codesandbox-dependency: (.*?) (.*)/g;
+const dependencySubs = " from '$1';";
+
 export const withCodeSandboxButton: StoryWrapper = (StoryFn: StoryFunction, context: StoryContext) => {
   if (context.viewMode === 'docs') {
     useEffect(() => {
       displayToolState(`#anchor--${context.id} .docs-story`, context);
     });
   }
-
+  
   return StoryFn(context);
 };
 
 const getDependencies = (fileContent: string) => {
-  const matches = fileContent.matchAll(/import .* from ['"](.*?)['"];/g);
-  const dependencies = new Set<string>();
-  dependencies
-    .add('react-scripts') // necessary when using typescript in CodeSandbox
-    .add('react-dom') // necessary for react
-    .add('@fluentui/react-components'); // necessary for theme provider
+  const dependencies: { [dependencyName: string]: string } = {}; // [name] = "version"
 
-  for (const match of matches) {
-    if (!match[1].startsWith('react/')) dependencies.add(match[1]);
+  // add always necessary dependencies
+  dependencies["react-scripts"] = "latest"; // necessary when using typescript in CodeSandbox
+  dependencies["react-dom"] = "latest"; // necessary for react
+  dependencies["@fluentui/react-components"] = "<9.0.0-alpha.60"; // necessary for theme provider, fixing version because latest doesn’t work in CodeSandbox
+  
+  // extract dependencies from codesandbox-dependency comments
+  const dependencyMatches = fileContent.matchAll(dependencyRegex);
+  for (const match of dependencyMatches) {
+    dependencies[match[1]] = match[2];
   }
 
-  const dependenciesWithVersions: { [dependencyName: string]: string } = {};
-  for (const dependency of dependencies) {
-    if (dependency == '@fluentui/react-components')
-      // FIX until react-components starts working in CodeSandbox
-      dependenciesWithVersions[dependency] = '<9.0.0-alpha.60';
-    else if (dependency.startsWith('@fluentui/react-'))
-      // FIX until we get to a stable version
-      dependenciesWithVersions[dependency] = '^9.0.0-alpha';
-    else dependenciesWithVersions[dependency] = 'latest';
+  // extract dependencies from imports
+  const matches = replaceRelativeImports(fileContent).matchAll(/import .* from ['"](.*?)['"];/g);
+
+  for (const match of matches) 
+  {
+    if (!match[1].startsWith('react/')) 
+    {
+      const dependency = match[1];
+
+      if( ! dependencies.hasOwnProperty(dependency)) 
+      {
+        if (dependency.startsWith('@fluentui/react-'))
+          dependencies[dependency] = '^9.0.0-alpha'; // FIX until we get to a stable version
+        else 
+          dependencies[dependency] = 'latest';
+      }
+    }
   }
 
-  return dependenciesWithVersions;
+  return dependencies;
 };
 
 const displayToolState = (selector: string, context: any) => {
@@ -65,7 +78,7 @@ const displayToolState = (selector: string, context: any) => {
   const rootElement = document.querySelector(selector);
   rootElement.appendChild(exportLink);
 
-  const storyFile = context.parameters?.fullSource;
+  let storyFile = context.parameters?.fullSource;
 
   if (!storyFile) {
     console.error(`Export to CodeSandbox: Couldn’t find source for story ${context.story}.`);
@@ -80,6 +93,7 @@ const displayToolState = (selector: string, context: any) => {
   }
 
   const dependencies = getDependencies(storyFile);
+  storyFile = replaceRelativeImports(storyFile);
 
   const defaultFileToPreview = encodeURIComponent('/example.tsx');
   const codeSandboxParameters = getParameters({
@@ -110,3 +124,7 @@ const displayToolState = (selector: string, context: any) => {
   exportLink.style.setProperty('color', '#333333');
   exportLink.innerText = `Open in CodeSandbox`;
 };
+function replaceRelativeImports(storyFile: string): string {
+  return storyFile.replaceAll(dependencyRegex, dependencySubs);
+}
+
