@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from '@fluentui/react-button'; // codesandbox-dependecy: @fluentui/react-button ^9.0.0-alpha
+import { Button } from '@fluentui/react-button'; // codesandbox-dependency: @fluentui/react-button ^9.0.0-alpha
 
 export const Emphasis = () => (
   <>
