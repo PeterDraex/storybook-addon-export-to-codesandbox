@@ -1,5 +1,6 @@
 import { StoryFn as StoryFunction, StoryContext, useEffect, StoryWrapper } from '@storybook/addons';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
+import dedent from 'dedent';
 import { indexTs, indexHtml } from './exportTemplates';
 
 const dependencyRegex = / from '.*?'; \/\/ codesandbox-dependency: (.*?) (.*)/g;
@@ -85,15 +86,17 @@ const displayToolState = (selector: string, context: any) => {
     return false;
   }
 
-  if (storyFile.match(/[(import|export)] .* from ['"]\./g)) {
+  const dependencies = getDependencies(storyFile);
+  storyFile = replaceRelativeImports(storyFile);
+
+  if (storyFile.match(/import .* from ['"]\./g)) {
     console.error(
-      `Export to CodeSandbox: Story "${context.story}" contains relative import or export. Please use package imports only.`,
+      dedent`Export to CodeSandbox: Story "${context.story}" contains relative import without defined package.
+             Please add the following comment to the end of each line with relative import:
+             // codesandbox-dependency: [package-name] [pacakge version]`,
     );
     return false;
   }
-
-  const dependencies = getDependencies(storyFile);
-  storyFile = replaceRelativeImports(storyFile);
 
   const defaultFileToPreview = encodeURIComponent('/example.tsx');
   const codeSandboxParameters = getParameters({
